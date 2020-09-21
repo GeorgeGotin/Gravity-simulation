@@ -35,7 +35,7 @@ class sc():
 		keyboard.add_hotkey('ctrl + m',lambda: self.center(-1))
 
 class obect():
-	def __init__(self, image, mass, speed, x, y):
+	def __init__(self, image, mass, speed, x, y, t=1):
 		self.m = mass
 		if image != None and image != 0:
 			self.mg = pygame.image.load(image)
@@ -44,6 +44,7 @@ class obect():
 			self.rect.left = x - (self.rect.width/2)
 		self.x = x
 		self.y = y
+		self.t = t
 		self.speed = speed
 		self.speed.append((self.speed[0]**2 + self.speed[1]**2)**0.5)
 	
@@ -113,13 +114,16 @@ class obect_list(list):
 				
 				critical_distance = ((obbect.rect.width**2 + obbect.rect.height**2)**0.5 + (subect.rect.width**2 + subect.rect.height**2)**0.5)/2
 				if r < critical_distance:
-					subect.x = (subect.x * subect.m + obbect.x * obbect.m) / (subect.m + obbect.m)
-					subect.y = (subect.y * subect.m + obbect.y * obbect.m) / (subect.m + obbect.m)
-					subect.speed[0] = (subect.speed[0] * subect.m + obbect.speed[0] * obbect.m) / (subect.m + obbect.m)
-					subect.speed[1] = (subect.speed[1] * subect.m + obbect.speed[1] * obbect.m) / (subect.m + obbect.m)
-					subect.speed[2] = (subect.speed[0]**2 + subect.speed[1]**2)**0.5
-					subect.m += obbect.m
-					self.remove(obbect)
+					if subect.t + obbect.t >= 1:
+						subect.x = (subect.x * subect.m + obbect.x * obbect.m) / (subect.m + obbect.m)
+						subect.y = (subect.y * subect.m + obbect.y * obbect.m) / (subect.m + obbect.m)
+						subect.speed[0] = (subect.speed[0] * subect.m + obbect.speed[0] * obbect.m) / (subect.m + obbect.m)
+						subect.speed[1] = (subect.speed[1] * subect.m + obbect.speed[1] * obbect.m) / (subect.m + obbect.m)
+						subect.speed[2] = (subect.speed[0]**2 + subect.speed[1]**2)**0.5
+						subect.m += obbect.m
+						subect.t += obbect.t
+						subect.t /=2
+						self.remove(obbect)
 				
 		return self
 	def move (self):
@@ -168,11 +172,11 @@ balls = [ball1,ball2,ball3,ball4]
 '''
 
 m = 500
-ball1 = obect("intro_ball.gif", 10*m,[0,0],990,540)
-ball2 = obect("intro_ball.gif", m+m//5,[0,(11.25*abs(m)/800)**0.5],190,540)
-ball3 = obect("intro_ball.gif", m+m//500,[-(11.25*abs(m)/800)**0.5,0],990,-260)
-ball4 = obect("intro_ball.gif", m+m//5,[0,-(11.25*abs(m)/800)**0.5],1790,540)
-ball5 = obect("intro_ball.gif", m+m//500,[(11.25*abs(m)/800)**0.5,0],990,1340)
+ball1 = obect("intro_ball.gif", 10*m,[0,0],990,540,0)
+ball2 = obect("intro_ball.gif", m+m//5,[0,(11.25*abs(m)/800)**0.5],190,540,0)
+ball3 = obect("intro_ball.gif", m+m//500,[-(11.25*abs(m)/800)**0.5,0],990,-260,0)
+ball4 = obect("intro_ball.gif", m+m//5,[0,-(11.25*abs(m)/800)**0.5],1790,540,0)
+ball5 = obect("intro_ball.gif", m+m//500,[(11.25*abs(m)/800)**0.5,0],990,1340,0)
 
 balls=obect_list([ball1,ball2,ball3,ball4,ball5])
 '''
